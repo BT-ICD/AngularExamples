@@ -1,0 +1,30 @@
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            Employee List
+        </div>
+        <div class="card-body">
+            <p-table [value]="empList" selectionMode="single" [(selection)] ="selectedEmp"
+                (onRowSelect)="onRowSelect($event)" (onRowUnselect)="onRowUnselect($event)" dataKey="id"
+            >
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Id</th>
+                        <th>Name</th>
+                        <th>Designation</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-emp>
+                    <tr [pSelectableRow]="emp">
+                        <td>{{emp.id}}</td>
+                        <td>{{emp.name}}</td>
+                        <td>{{emp.designation}}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+        <div class="card-footer">
+            <button class="btn btn-primary" (click)="edit()">Edit</button>
+        </div>
+    </div>
+</div>
