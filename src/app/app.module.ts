@@ -7,7 +7,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { AppComponent } from './app.component';
 import { ProductModule } from './product/product.module';
 import { EmpModule } from './emp/emp.module';
-import { StoreModule } from '@ngrx/store';
+import { SignalRDemoModule } from './signal-rdemo/signal-rdemo.module';
 
 
 @NgModule({
@@ -21,7 +21,8 @@ import { StoreModule } from '@ngrx/store';
     AppRoutingModule,
     ProductModule,
     EmpModule,
-    StoreModule.forRoot({}, {})
+    
+    SignalRDemoModule
     
     
   ],
