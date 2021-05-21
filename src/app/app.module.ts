@@ -8,6 +8,8 @@ import { AppComponent } from './app.component';
 import { ProductModule } from './product/product.module';
 import { EmpModule } from './emp/emp.module';
 import { SignalRDemoModule } from './signal-rdemo/signal-rdemo.module';
+import { UserLoginModule } from './user-login/user-login.module';
+import { HttpClientModule } from '@angular/common/http';
 
 
 @NgModule({
@@ -17,12 +19,15 @@ import { SignalRDemoModule } from './signal-rdemo/signal-rdemo.module';
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    
+    HttpClientModule,
     AppRoutingModule,
+    
     ProductModule,
     EmpModule,
-    
+    UserLoginModule,
     SignalRDemoModule
+    
+    
     
     
   ],

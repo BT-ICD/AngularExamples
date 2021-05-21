@@ -1,10 +1,12 @@
 /** 
  * Learning references: 
  * https://docs.microsoft.com/en-us/aspnet/core/signalr/javascript-client?view=aspnetcore-5.0
+ * https://docs.microsoft.com/en-us/aspnet/core/signalr/authn-and-authz?view=aspnetcore-5.0
 */
 import { Component, OnInit } from '@angular/core';
 import * as signalR from '@microsoft/signalr'
 import { HubConnection } from '@microsoft/signalr';
+import { AuthDataService } from 'src/app/Shared/Services/auth/auth-data.service';
 @Component({
   selector: 'app-message-demo1',
   templateUrl: './message-demo1.component.html',
@@ -15,11 +17,11 @@ message:string;
 messagefromClient:string;
 user:string;
 private _hubConnection:HubConnection;
-  constructor() { }
+  constructor(private authDataService:AuthDataService) { }
 //Without any parameters, withAutomaticReconnect() configures the client to wait 0, 2, 10, and 30 seconds respectively before trying each reconnect attempt, stopping after four failed attempts.
   ngOnInit(): void {
     this._hubConnection = new signalR.HubConnectionBuilder()
-                          .withUrl('https://localhost:44342/messagehub')
+                          .withUrl('https://localhost:44342/messagehub', {accessTokenFactory:()=> this.authDataService.userToken.token})
                           .withAutomaticReconnect([0,1000,5000,10000])
                           .configureLogging(signalR.LogLevel.Trace)
                           .build();
