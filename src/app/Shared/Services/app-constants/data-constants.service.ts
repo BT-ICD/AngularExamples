@@ -10,5 +10,8 @@ export class DataConstantsService {
 
   //Authenticate EndPoints
   readonly login:string = 'Authenticate/Login';
+
+  //Dept EndPoints
+  readonly DEPT_GETLIST:string = 'Dept/GetList'
   
 }

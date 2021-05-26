@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import {  NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -10,11 +10,15 @@ import { EmpModule } from './emp/emp.module';
 import { SignalRDemoModule } from './signal-rdemo/signal-rdemo.module';
 import { UserLoginModule } from './user-login/user-login.module';
 import { HttpClientModule } from '@angular/common/http';
+import { DeptModule } from './dept/dept.module';
+import { ErrorsModule } from './Core/errors/errors.module';
+import { ErrorNotificationService } from './Shared/Services/error-notification.service';
 
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    
   ],
   imports: [
     BrowserModule,
@@ -25,13 +29,17 @@ import { HttpClientModule } from '@angular/common/http';
     ProductModule,
     EmpModule,
     UserLoginModule,
-    SignalRDemoModule
+    SignalRDemoModule,
+    
+    DeptModule,
+    
+    ErrorsModule
     
     
     
     
   ],
-  providers: [],
+  providers: [ErrorNotificationService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
