@@ -2,10 +2,10 @@
  * Learning refereces:
  * https://rxjs.dev/api/index/function/fromEvent
  */
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { fromEvent, Subscription } from 'rxjs';
-import { ErrorNotificationService } from './Shared/Services/error-notification.service';
+import { NotificationService } from './Core/Service/notification-service/notification.service';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -15,7 +15,7 @@ export class AppComponent implements OnInit, OnDestroy {
   offLineEventSub:Subscription;
   onLineEventSub:Subscription;
   errorNotificationServiceSub:Subscription;
-  constructor(private router:Router, private errorNotificationService:ErrorNotificationService) {}
+  constructor(private router:Router, private errorNotificationService:NotificationService, private ngZone:NgZone) {}
 
   
   title = 'MyNgRxDemoApp';
@@ -25,16 +25,26 @@ export class AppComponent implements OnInit, OnDestroy {
 
     this.offLineEventSub= offLineEvent.subscribe((data)=>this.onOffline(data));
     this.onLineEventSub= onLineEvent.subscribe((data)=>this.onLine(data));
+    this.errorNotificationService.notification$.subscribe((error)=>this.onError(error))
+
   }
   onOffline(data):void{
     console.log(data);
     this.errorNotificationService.notify('Internet connection is not available. Please check your connection and try again.');
-
-  }
+      }
   onLine(data):void{
     console.log('online');
     console.log(data);
     // alert('Inernet connection online');
+  }
+  onError(error):void{
+    console.log('on error from app component');
+    console.log(error);
+    if(error){
+      // this.router.navigateByUrl('/errorpage');
+      // this.router.navigate(['errorpage']);
+      this.ngZone.run(()=> this.router.navigate(['/errorpage']));
+    }
   }
   ngOnDestroy(): void {
     if (this.onLineEventSub)

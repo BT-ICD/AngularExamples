@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { ErrorNotificationService } from 'src/app/Shared/Services/error-notification.service';
+import { NotificationService } from '../../Service/notification-service/notification.service';
 
 @Component({
   selector: 'app-error-page',
@@ -11,7 +11,7 @@ import { ErrorNotificationService } from 'src/app/Shared/Services/error-notifica
 export class ErrorPageComponent implements OnInit, OnDestroy {
   errorMessage: string;
   errorNotificationServiceSub:Subscription;
-  constructor(private route:ActivatedRoute, private errorNotificationService:ErrorNotificationService) { }
+  constructor(private route:ActivatedRoute, private errorNotificationService:NotificationService) { }
   ngOnDestroy(): void {
     if(this.errorNotificationServiceSub)
       this.errorNotificationServiceSub.unsubscribe();

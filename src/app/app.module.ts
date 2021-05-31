@@ -12,34 +12,29 @@ import { UserLoginModule } from './user-login/user-login.module';
 import { HttpClientModule } from '@angular/common/http';
 import { DeptModule } from './dept/dept.module';
 import { ErrorsModule } from './Core/errors/errors.module';
-import { ErrorNotificationService } from './Shared/Services/error-notification.service';
+import { NotificationService } from './Core/Service/notification-service/notification.service';
 
 
 @NgModule({
   declarations: [
-    AppComponent,
+    AppComponent
     
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,
-    AppRoutingModule,
-    
     ProductModule,
     EmpModule,
     UserLoginModule,
     SignalRDemoModule,
-    
     DeptModule,
-    
-    ErrorsModule
-    
-    
+    ErrorsModule,
+    AppRoutingModule
     
     
   ],
-  providers: [ErrorNotificationService],
+  providers: [NotificationService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

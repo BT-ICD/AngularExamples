@@ -20,6 +20,7 @@ import { GlobalErrorHandlerService } from './errors-handler/global-error-handler
     ])
   ],
   providers:[
+    
     {provide:ErrorHandler, useClass:GlobalErrorHandlerService},
     {provide:HTTP_INTERCEPTORS, useClass:ServerErrorsInterceptorService, multi:true}
   ]
