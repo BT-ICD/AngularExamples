@@ -5,14 +5,23 @@
         </div>
         <div class="card-body">
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-10">
                     Message From Server {{message}}
                 </div>
-                <div class="col-md-6">
-                    <button class="btn btn-primary" (click)="invokeServerMethod()">Invoke Server Method</button>
-                </div>
-                <div class="col-md-6">
-                    Message From Client {{user}} is  {{messagefromClient}}
+                
+                
+            </div>
+            <div class="row">
+                    <div class="col-md-6">
+                        <input #txtMessage type="text" class="form-control" >
+                    </div>
+                    <div class="col-md-6">
+                        <button class="btn btn-primary" (click)="invokeServerMethod(txtMessage.value)">Invoke Server Method</button>
+                    </div>
+            </div>
+            <div class="row">
+                <div class="col-md-10">
+                    Message From Client {{recMessage?.user}} is  {{recMessage?.message}}
                 </div>
             </div>
         </div>
