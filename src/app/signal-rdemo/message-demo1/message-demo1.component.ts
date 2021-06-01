@@ -1,75 +1,44 @@
-/** 
- * Learning references: 
- * https://docs.microsoft.com/en-us/aspnet/core/signalr/javascript-client?view=aspnetcore-5.0
- * https://docs.microsoft.com/en-us/aspnet/core/signalr/authn-and-authz?view=aspnetcore-5.0
-*/
-import { Component, OnInit } from '@angular/core';
-import * as signalR from '@microsoft/signalr'
-import { HubConnection } from '@microsoft/signalr';
-import { AuthDataService } from 'src/app/Shared/Services/auth/auth-data.service';
+
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { SignalRService } from 'src/app/core/Service/signalr-service/signal-r.service';
+import { ReceivedMessageDTO } from 'src/app/core/types/signalr-message-types';
+
 @Component({
   selector: 'app-message-demo1',
   templateUrl: './message-demo1.component.html',
   styleUrls: ['./message-demo1.component.css']
 })
-export class MessageDemo1Component implements OnInit {
+export class MessageDemo1Component implements OnInit, OnDestroy {
 message:string;
-messagefromClient:string;
-user:string;
-private _hubConnection:HubConnection;
-  constructor(private authDataService:AuthDataService) { }
+
+sendMessage:string;
+recMessage:ReceivedMessageDTO;
+messageSub:Subscription;
+receivedMessageSub:Subscription;
+  constructor( private signalRService:SignalRService) { }
+  
 //Without any parameters, withAutomaticReconnect() configures the client to wait 0, 2, 10, and 30 seconds respectively before trying each reconnect attempt, stopping after four failed attempts.
   ngOnInit(): void {
-    this._hubConnection = new signalR.HubConnectionBuilder()
-                          .withUrl('https://localhost:44342/messagehub', {accessTokenFactory:()=> this.authDataService.userToken.token})
-                          .withAutomaticReconnect([0,1000,5000,10000])
-                          .configureLogging(signalR.LogLevel.Trace)
-                          .build();
+    this.messageSub= this.signalRService.messageSubject$.subscribe((data)=> this.onMessageRetrieved(data));
+    this.receivedMessageSub= this.signalRService.receivedMessageSubject$.subscribe((data)=> this.onMessageReceived(data));
     
-
-    this._hubConnection.on('serverTime', (data)=>this.onMessageRetrieved(data));
-    this._hubConnection.on('ReceiveMessage',(user, message)=>this.onMessageReceived(user,message));
-    this._hubConnection.onclose(this.onConnectionClose)
-    this._hubConnection.onreconnecting(this.onReconnecting);
-    this._hubConnection.onreconnected(this.onReconntected);
-    
-
-    this._hubConnection
-        .start()
-        .then(()=>console.log('Connection Started'))
-        .catch((err)=>console.log('Error while starting connection '+ err));
   }
-  onMessageRetrieved(data):void{
+  onMessageRetrieved(data:string):void{
+    console.log('From Message Demo Component Message retrieved From Signalr Service');
     this.message = data;
-    let date = new Date();
-    console.log(date.toLocaleTimeString());
-    console.log(this.message);
-
   }
-  onMessageReceived(user, message){
-    this.user = user;
-    this.messagefromClient= message;
+  onMessageReceived(data:ReceivedMessageDTO){
+    this.recMessage = data;
   }
-  onConnectionClose(err?){
-    console.log('Connection Closed');
-    if(err){
-      console.log('Error from onConnectionClose: ',err);
-    }
   
+  invokeServerMethod(message:string):void{
+    this.signalRService.invokeServerMethod(message);
   }
-  async invokeServerMethod(){
-    try{
-      await this._hubConnection.invoke("SendMessage","Bhavin","Hello From Client " + (new Date().toTimeString()));
-    }catch(err){
-      console.log(err)
-    }
-  }
-  onReconnecting(err?){
-    console.log('onReconnecting');
-    console.log('onReconnecting event executed', err);
-  }
-  onReconntected(connectionId?):void{
-    console.log('onReconntected')
-    console.log('onReconntected', connectionId);
+  ngOnDestroy(): void {
+    if(this.messageSub)
+      this.messageSub.unsubscribe();
+    if(this.receivedMessageSub)
+      this.receivedMessageSub.unsubscribe();    
   }
 }

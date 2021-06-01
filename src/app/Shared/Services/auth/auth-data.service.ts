@@ -28,10 +28,23 @@ export class AuthDataService {
   public set userName(value: string) {
     this._userName = value;
     if(value && value!='')
-    localStorage.setItem('userName',value);
+      localStorage.setItem('userName',value);
     else
-    localStorage.removeItem('userName');
+      localStorage.removeItem('userName');
   }
 
-  constructor() { }
+  constructor() {
+    this.initializeTokenandUserFromLocalStorage();
+   }
+   /* To initialize user name, token from local storage. This is useful when user refresh application page, so we can initialize username and token from local storage. */
+  initializeTokenandUserFromLocalStorage():void{
+    if(localStorage.getItem('userName')){
+      this._userName=localStorage.getItem('userName');
+    }
+    if(localStorage.getItem('tokenObj')){
+      this._userToken= JSON.parse( localStorage.getItem('tokenObj'));
+      this.isAuthenticated =true;
+    }
+   
+  }
 }

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { SignalRService } from 'src/app/core/Service/signalr-service/signal-r.service';
 import { AuthDataService } from 'src/app/Shared/Services/auth/auth-data.service';
 import { UserLoginDataService } from 'src/app/Shared/Services/user-login-data.service';
 import { ILoginModel, ITokenModel } from 'src/app/Shared/Types/login-type';
@@ -15,7 +16,7 @@ export class AppLoginComponent implements OnInit {
   errorMessage:string;
   loginModel:ILoginModel;
 
-  constructor(private fb:FormBuilder, private authDataService:AuthDataService,  private userLoginDataService:UserLoginDataService, private router:Router) { }
+  constructor(private fb:FormBuilder,private signalRService:SignalRService, private authDataService:AuthDataService,  private userLoginDataService:UserLoginDataService, private router:Router) { }
 
   ngOnInit(): void {
     this.initializeForm();
@@ -40,6 +41,10 @@ export class AppLoginComponent implements OnInit {
     this.errorMessage='';
     this.authDataService.userToken=userToken;
     this.authDataService.userName = this.loginModel.userName;
+    /* Start SignalR Connection */
+    console.log('SignalR connection started from login component');
+
+    this.signalRService.startConnection();
     this.router.navigate(['/emp']);
   }
   onLoginError(err){
