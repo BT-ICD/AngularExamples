@@ -4,6 +4,7 @@
  */
 import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { MessageService } from 'primeng/api';
 import { fromEvent, Subscription } from 'rxjs';
 import { NotificationService } from './Core/Service/notification-service/notification.service';
 import { SignalRService } from './core/Service/signalr-service/signal-r.service';
@@ -11,13 +12,14 @@ import { AuthDataService } from './Shared/Services/auth/auth-data.service';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
+  providers:[MessageService]
 })
 export class AppComponent implements OnInit, OnDestroy {
   offLineEventSub:Subscription;
   onLineEventSub:Subscription;
   errorNotificationServiceSub:Subscription;
-  constructor(private router:Router, private errorNotificationService:NotificationService, private ngZone:NgZone, private authDataService:AuthDataService, private signalRService:SignalRService) {}
+  constructor(private router:Router,private messageService:MessageService ,  private errorNotificationService:NotificationService, private ngZone:NgZone, private authDataService:AuthDataService, private signalRService:SignalRService) {}
 
   
   title = 'MyNgRxDemoApp';
@@ -33,6 +35,11 @@ export class AppComponent implements OnInit, OnDestroy {
       console.log('SignalR connection started from app component');
       this.signalRService.startConnection();
     }
+    this.signalRService.receivePrivateMessageSubject$.subscribe((privatemessage)=>this.onPrivateMessageReceived(privatemessage));
+
+  }
+  onPrivateMessageReceived(privateMessage:string):void{
+    this.messageService.add({severity:'success', summary:'Service Message', detail:'Via MessageService'+ privateMessage});
 
   }
   onOffline(data):void{
