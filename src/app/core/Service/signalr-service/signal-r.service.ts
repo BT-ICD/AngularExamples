@@ -23,6 +23,9 @@ export class SignalRService {
 
   private readonly receivedMessageSubject = new Subject<ReceivedMessageDTO>();
   readonly receivedMessageSubject$ = this.receivedMessageSubject.asObservable();
+
+  private readonly receivePrivateMessageSubject = new Subject<string>();
+  readonly receivePrivateMessageSubject$ = this.receivePrivateMessageSubject.asObservable();
   constructor(private authDataService: AuthDataService) { }
   startConnection = () => {
     if(this.authDataService.isAuthenticated){
@@ -43,6 +46,8 @@ export class SignalRService {
       /* Initialize methods to communicate with SignalR */
       this._hubConnection.on('serverTime', (data) => this.onMessageRetrieved(data));
       this._hubConnection.on('ReceiveMessage', (user, message) => this.onMessageReceived(user, message));
+      this._hubConnection.on('onPrivateMessageReceived',(message)=>this.onPrivateMessageReceived(message));
+
       this._hubConnection.onclose(this.onConnectionClose)
       this._hubConnection.onreconnecting(this.onReconnecting);
       this._hubConnection.onreconnected(this.onReconntected);
@@ -61,6 +66,11 @@ export class SignalRService {
     this.messagefromClient= message;
     let data:ReceivedMessageDTO={user,message};
     this.receivedMessageSubject.next(data);
+  }
+  onPrivateMessageReceived(privateMessage:string):void{
+   
+    console.log('onPrivateMessageReceived', privateMessage);
+    this.receivePrivateMessageSubject.next(privateMessage);
   }
   onConnectionClose(err?){
     console.log('Connection Closed');

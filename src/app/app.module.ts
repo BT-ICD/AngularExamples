@@ -14,6 +14,8 @@ import { DeptModule } from './dept/dept.module';
 import { ErrorsModule } from './Core/errors/errors.module';
 import { NotificationService } from './Core/Service/notification-service/notification.service';
 
+import {MessagesModule} from 'primeng/messages';
+import {MessageModule} from 'primeng/message';
 
 @NgModule({
   declarations: [
@@ -30,9 +32,9 @@ import { NotificationService } from './Core/Service/notification-service/notific
     SignalRDemoModule,
     DeptModule,
     ErrorsModule,
-    AppRoutingModule
-    
-    
+    AppRoutingModule,
+    MessagesModule,
+    MessageModule
   ],
   providers: [NotificationService],
   bootstrap: [AppComponent]
