@@ -7,8 +7,9 @@ import { Injectable } from '@angular/core';
 
 import * as signalR from '@microsoft/signalr'
 import { HubConnection } from '@microsoft/signalr';
-import { Subject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { AuthDataService } from 'src/app/Shared/Services/auth/auth-data.service';
+import { IOnlineUser } from '../../types/onlineuser-types';
 import { ReceivedMessageDTO } from '../../types/signalr-message-types';
 @Injectable({
   providedIn: 'root'
@@ -26,6 +27,9 @@ export class SignalRService {
 
   private readonly receivePrivateMessageSubject = new Subject<string>();
   readonly receivePrivateMessageSubject$ = this.receivePrivateMessageSubject.asObservable();
+
+  private readonly onlineUserListSubject = new BehaviorSubject<IOnlineUser[]> (null);
+  readonly onlineUserListSubject$ = this.onlineUserListSubject.asObservable();
   constructor(private authDataService: AuthDataService) { }
   startConnection = () => {
     if(this.authDataService.isAuthenticated){
@@ -47,11 +51,16 @@ export class SignalRService {
       this._hubConnection.on('serverTime', (data) => this.onMessageRetrieved(data));
       this._hubConnection.on('ReceiveMessage', (user, message) => this.onMessageReceived(user, message));
       this._hubConnection.on('onPrivateMessageReceived',(message)=>this.onPrivateMessageReceived(message));
+      this._hubConnection.on('getOnlineUsers', (data)=>this.getOnlineUsers(data));
 
       this._hubConnection.onclose(this.onConnectionClose)
       this._hubConnection.onreconnecting(this.onReconnecting);
       this._hubConnection.onreconnected(this.onReconntected);
   }
+  }
+  getOnlineUsers(data:IOnlineUser[]){
+    this.onlineUserListSubject.next(data);
+    
   }
   onMessageRetrieved(data):void{
     this.message = data;
