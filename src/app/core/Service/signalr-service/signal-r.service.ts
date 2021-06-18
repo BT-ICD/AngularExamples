@@ -30,6 +30,10 @@ export class SignalRService {
 
   private readonly onlineUserListSubject = new BehaviorSubject<IOnlineUser[]> (null);
   readonly onlineUserListSubject$ = this.onlineUserListSubject.asObservable();
+
+  private readonly multipleConnectionAttemptedSubject = new Subject<string>();
+  readonly multipleConnectionAttemptedSubject$ = this.multipleConnectionAttemptedSubject.asObservable();
+
   constructor(private authDataService: AuthDataService) { }
   startConnection = () => {
     if(this.authDataService.isAuthenticated){
@@ -52,7 +56,7 @@ export class SignalRService {
       this._hubConnection.on('ReceiveMessage', (user, message) => this.onMessageReceived(user, message));
       this._hubConnection.on('onPrivateMessageReceived',(message)=>this.onPrivateMessageReceived(message));
       this._hubConnection.on('getOnlineUsers', (data)=>this.getOnlineUsers(data));
-
+      this._hubConnection.on('onMultipleConnectionAttempted', (data)=> this.onMultipleConnectionAttempted(data));
       this._hubConnection.onclose(this.onConnectionClose)
       this._hubConnection.onreconnecting(this.onReconnecting);
       this._hubConnection.onreconnected(this.onReconntected);
@@ -81,12 +85,21 @@ export class SignalRService {
     console.log('onPrivateMessageReceived', privateMessage);
     this.receivePrivateMessageSubject.next(privateMessage);
   }
+  onMultipleConnectionAttempted(data:string){
+    console.log('onMultipleConnectionDetected');
+    this._hubConnection.stop().then(()=>this.onHubConnectionClose());
+    this.multipleConnectionAttemptedSubject.next(data);
+    
+  }
   onConnectionClose(err?){
     console.log('Connection Closed');
     if(err){
       console.log('Error from onConnectionClose: ',err);
     }
   
+  }
+  onHubConnectionClose(){
+    console.log('Hub Connection Closed due to Multiple Connection')
   }
   async invokeServerMethod(message:string){
     try{

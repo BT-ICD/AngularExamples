@@ -17,7 +17,7 @@ import { NotificationService } from './Core/Service/notification-service/notific
 import {MessagesModule} from 'primeng/messages';
 import {MessageModule} from 'primeng/message';
 import { OnlineUsersModule } from './online-users/online-users.module';
-
+import {DialogModule} from 'primeng/dialog';
 @NgModule({
   declarations: [
     AppComponent
@@ -36,7 +36,8 @@ import { OnlineUsersModule } from './online-users/online-users.module';
     AppRoutingModule,
     MessagesModule,
     MessageModule,
-    OnlineUsersModule
+    OnlineUsersModule,
+    DialogModule
   ],
   providers: [NotificationService],
   bootstrap: [AppComponent]
