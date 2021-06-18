@@ -33,4 +33,8 @@
   </div>
 </nav>
 <p-messages></p-messages>
+<p-dialog header="Title" [(visible)]="displayMultipleLoginDialog" (onHide)="onDialogHide()" [modal]="true" [closeOnEscape]="false" [closable]="false">
+ Already logged in from another browser/device/tab. 
+ 
+</p-dialog>
 <router-outlet></router-outlet>

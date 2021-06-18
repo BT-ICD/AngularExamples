@@ -19,6 +19,7 @@ export class AppComponent implements OnInit, OnDestroy {
   offLineEventSub:Subscription;
   onLineEventSub:Subscription;
   errorNotificationServiceSub:Subscription;
+  displayMultipleLoginDialog: boolean = false;
   constructor(private router:Router,private messageService:MessageService ,  private errorNotificationService:NotificationService, private ngZone:NgZone, private authDataService:AuthDataService, private signalRService:SignalRService) {}
 
   
@@ -36,11 +37,20 @@ export class AppComponent implements OnInit, OnDestroy {
       this.signalRService.startConnection();
     }
     this.signalRService.receivePrivateMessageSubject$.subscribe((privatemessage)=>this.onPrivateMessageReceived(privatemessage));
+    this.signalRService.multipleConnectionAttemptedSubject$.subscribe((data)=> this.onMultipleConnectionAttempted(data));
 
   }
   onPrivateMessageReceived(privateMessage:string):void{
     this.messageService.add({severity:'success', summary:'Service Message', detail:'Via MessageService'+ privateMessage});
 
+  }
+  onMultipleConnectionAttempted(data:string){
+    this.messageService.add({severity:'error', summary:'Already logged in', detail:'Via MessageService'+ data});
+    this.router.navigate(['/login']);
+    this.displayMultipleLoginDialog=true;
+  }
+  onDialogHide():void{
+    console.log('onDialogHide()');
   }
   onOffline(data):void{
     console.log(data);

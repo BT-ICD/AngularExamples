@@ -51,6 +51,9 @@ export class AppLoginComponent implements OnInit {
     if (err.status == 401) {
       this.errorMessage = 'Invalid user name or password. Please enter valid user name and password'
     }
+    else if (err.status==429){
+      this.errorMessage= err.statusText + '. Already logged in to application using another browser/tab/device. \n Close another session and try again.';
+    }
     else {
       this.errorMessage = err.statusText;
     }
